@@ -1,0 +1,4 @@
+.sublime/
+deploy/
+node_modules/
+temp/
