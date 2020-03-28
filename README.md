@@ -14,7 +14,7 @@ The CR module source can be found in the **src/wiki folder.**
 
 3. In vsc install the [**vscode-lua**](https://marketplace.visualstudio.com/items?itemName=trixnz.vscode-lua) extension for Lua language support and automatic use of luacheck to lint Lua code.
 
-4. In vsc install the [Lua Debug](https://marketplace.visualstudio.com/items?itemName=actboy168.lua-debug) to enable Lua debugging.
+4. In vsc install the [Lua Debug](https://marketplace.visualstudio.com/items?itemName=actboy168.lua-debug) extensions to enable Lua debugging.
 
 5. _(Optional)_ Install Lua. You should only need this if you want to run Lua code from the command line.
 
