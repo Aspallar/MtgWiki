@@ -446,13 +446,13 @@ function CR.only(frame)
             -- ignore whitespace
             if collecting and match(line, "%S") then
                 if additionalLevels then
-                    local _, _, index = SplitLine(line)
+                    local _, _, additionalIndex = SplitLine(line)
                     -- This looks a little weird.
                     -- We only update lineDepth in the case that we're looking at a rules index
                     -- But we capture any line for which it or the preceding index is within our targeting scope
                     -- (examples, mostly)
-                    if index then
-                        lineDepth = GetNestingDepth(index)
+                    if additionalIndex then
+                        lineDepth = GetNestingDepth(additionalIndex)
                     end
                     if lineDepth <= ruleDepth + additionalLevels then
                         tinsert(output, line)
@@ -580,14 +580,14 @@ end
 
 function CR.FormatRaw(frame)
     -- can't just unpack these because Scribunto screws with the metatable
-    local source, update, rawRulesText, format = frame.args[1], frame.args[2], frame.args[3], frame.args[4]
+    local source, update, rawRulesText, rulesFormat = frame.args[1], frame.args[2], frame.args[3], frame.args[4]
 
     -- split the lines so that it'll format correctly
     local lines = {}
     for line in gmatch(rawRulesText, LINE_PATTERN) do
         tinsert(lines, line)
     end
-    if format == "glossary" then
+    if rulesFormat == "glossary" then
         return tostring(CreateGlossaryDiv(lines,source,update))
     elseif find(rawRulesText,"(Obsolete)") then
         return tostring(CreateRulesDiv(lines,source,update,OBSOLETE_COLOR))
