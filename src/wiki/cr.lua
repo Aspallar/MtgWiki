@@ -21,7 +21,7 @@ local BODY_END_LINE_PATTERN  = "^Glossary"
 local GLOSSARY_END_LINE_PATTERN = "^Credits"
 local GENERAL_RULE_PATTERN = "General"
 
-local WIKILINK_FORMAT = "[[%s]]"
+-- local WIKILINK_FORMAT = "[[%s]]" -- Condider: no-longer used, remove it entirely
 local WIKILINK_ALT_FORMAT = "[[%s|%s]]"
 local GENERAL_RULE_EXPANDED_TEXT_FORMAT = "General_(%s)"
 local CASUAL_FORMAT_EXPANDED_TEXT_FORMAT = "%s_(format)"
@@ -110,7 +110,7 @@ local function ParseIndex(index)
         return false
     end
 
-    local i, j, suffix = find(index, "%.(.+)")
+    local i, _, suffix = find(index, "%.(.+)")
     if suffix then
         -- If the last character in the suffix is alphanumeric (and not L or O), set the subrule
         subrule = match(sub(suffix, -1), "(["..INDEX_SUBRULE_CHARACTER_SET.."])")
@@ -153,7 +153,7 @@ local function IsSubsequentRule(line, heading, major, minor, subrule)
         return false
     end
 
-    local h, a, i, s = ParseIndex(index)
+    local h, a, i, _ = ParseIndex(index)
 
     if subrule then
         -- We can cheat like hell if we're dealing with subrules because there's no further nesting
@@ -212,15 +212,15 @@ local function Titleize(title)
 end
 
 local function StylizeRule(ruleLine)
-    local i, j, index, rest = SplitLine(ruleLine)
+    local _, _, index, rest = SplitLine(ruleLine)
     if not index then
         if find(ruleLine, "Example:") then
             ruleLine = "<p class=\"crExample\">''" .. gsub(ruleLine, "(Example:)", "'''%1'''") .. "''</p>"
         end
-        return ruleLine, true
+        return ruleLine
     end
 
-    local h, a, i, s = ParseIndex(index)
+    local h, a, i, _ = ParseIndex(index)
     -- Major indices and any rule shorter than five words should be a title, so try linking it!
     -- (this is probably a stupid assumption let's see how long before we get burned)
     if (h and a and not i) then
@@ -279,9 +279,9 @@ local function CreateRulesDiv(output,source,update,color)
     else
         local indentLevel
         local prevMax = 0
-        local outputLine, isExample, maxIndent, index, _
+        local outputLine, maxIndent, index, _
         for _, line in ipairs(output) do
-            outputLine, isExample = StylizeRule(line)
+            outputLine = StylizeRule(line)
             _, _, index = SplitLine(line)
             if index then
                 div:newline()
