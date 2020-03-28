@@ -22,6 +22,6 @@ The CR module source can be found in the **src/wiki folder.**
 
 Have a look at the **src\run_*.lua** files, they show how to call the CR module locally.
 
-There are a debug configurations set up for each of these. Go to the run window and select the one you want and click on the _Start Debugging_ button.
+There are debug configurations set up for each of these. Go to the run window and select the one you want and click on the _Start Debugging_ button.
 
 
