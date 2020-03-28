@@ -9,43 +9,43 @@ mw.title = {}
 mw.uri = {}
 
 function mw.loadData(moduleName)
-   assert(moduleName, "No module specified")
-   if moduleName == "Module:CR/rules" then
-       return rules
+    assert(moduleName, "No module specified")
+    if moduleName == "Module:CR/rules" then
+        return rules
     end
     assert(false, "Invalid module name: " .. moduleName)
 end
 
 function mw.getCurrentFrame()
-   local frame  = {
-      expandTemplate = function ()
-         return "Shadows of Lua"
-      end
-   }
-   return frame;
+    local frame  = {
+        expandTemplate = function ()
+            return "Shadows of Lua"
+        end
+    }
+    return frame;
 end
 
 function mw.title.getCurrentTitle()
-   return {
-      namespace = 0;
-   }
+    return {
+        namespace = 0;
+    }
 end
 
 function mw.log(s)
-	print("**** LOG: " .. s)
+    print("**** LOG: " .. s)
 end
 
 function mw.text.split(s, delimiter, plain)
-  local result = { }
-  local from  = 1
-  local delim_from, delim_to = string.find( s, delimiter, from, plain  )
-  while delim_from do
-    table.insert( result, string.sub( s, from , delim_from-1, plain ) )
-    from  = delim_to + 1
-    delim_from, delim_to = string.find( s, delimiter, from, plain  )
-  end
-  table.insert( result, string.sub( s, from  ) )
-  return result
+    local result = { }
+    local from  = 1
+    local delim_from, delim_to = string.find( s, delimiter, from, plain  )
+    while delim_from do
+        table.insert( result, string.sub( s, from , delim_from-1, plain ) )
+        from  = delim_to + 1
+        delim_from, delim_to = string.find( s, delimiter, from, plain  )
+    end
+    table.insert( result, string.sub( s, from  ) )
+    return result
 end
 
 function mw.text.trim(s)
@@ -55,7 +55,7 @@ function mw.text.trim(s)
 end
 
 function mw.text.encode(s)
-	return s
+    return s
 end
 
 function mw.uri.decode(s)
