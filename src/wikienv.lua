@@ -3,14 +3,12 @@
 
 local rules = require("wiki\\rules")
 
--- luacheck: push no global
 mw = {}
 mw.text = {}
 mw.title = {}
 mw.uri = {}
--- luacheck: pop
 
-function mw.loadData(moduleName) -- luacheck: no global
+function mw.loadData(moduleName)
    assert(moduleName, "No module specified")
    if moduleName == "Module:CR/rules" then
        return rules
@@ -18,7 +16,7 @@ function mw.loadData(moduleName) -- luacheck: no global
     assert(false, "Invalid module name: " .. moduleName)
 end
 
-function mw.getCurrentFrame() -- luacheck: no global
+function mw.getCurrentFrame()
    local frame  = {
       expandTemplate = function ()
          return "Shadows of Lua"
