@@ -25,17 +25,17 @@ function mw.getCurrentFrame()
    return frame;
 end
 
-function mw.title.getCurrentTitle() -- luacheck: no global
+function mw.title.getCurrentTitle()
    return {
       namespace = 0;
    }
 end
 
-function mw.log(s) -- luacheck: no global
+function mw.log(s)
 	print("**** LOG: " .. s)
 end
 
-function mw.text.split(s, delimiter, plain) -- luacheck: no global
+function mw.text.split(s, delimiter, plain)
   local result = { }
   local from  = 1
   local delim_from, delim_to = string.find( s, delimiter, from, plain  )
@@ -48,17 +48,17 @@ function mw.text.split(s, delimiter, plain) -- luacheck: no global
   return result
 end
 
-function mw.text.trim(s) -- luacheck: no global
+function mw.text.trim(s)
     local _, i1 = string.find(s,'^%s*')
     local i2 = string.find(s,'%s*$')
     return string.sub(s, i1 + 1, i2 - 1)
 end
 
-function mw.text.encode(s) -- luacheck: no global
+function mw.text.encode(s)
 	return s
 end
 
-function mw.uri.decode(s) -- luacheck: no global
+function mw.uri.decode(s)
     return s
 end
 
