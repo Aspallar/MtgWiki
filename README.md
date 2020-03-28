@@ -25,3 +25,5 @@ Have a look at the **src\run_*.lua** files, they show how to call the CR module 
 There are debug configurations set up for each of these. Go to the run window and select the one you want and click on the _Start Debugging_ button.
 
 
+## License
+Licensed under [CC BY-NC-SA 2.5](https://creativecommons.org/licenses/by-nc-sa/2.5/). For a list of contributers see the [history](https://mtg.gamepedia.com/index.php?title=Module:CR&action=history) on the MTG wiki.
