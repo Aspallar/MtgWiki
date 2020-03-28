@@ -84,7 +84,7 @@ local function GetLastUpdate()
 	local lastEffectiveDate = match(CR.text, COMP_RULES_DATE_PATTERN)
 	-- Italicize and wikilink the set name
 	local setName = format("''[[%s]]''", MOST_RECENT_SET_NAME)
-        local lastUpdate = lastEffectiveDate .. "—" .. setName 
+        local lastUpdate = lastEffectiveDate .. "—" .. setName
 	return lastUpdate
 end
 
@@ -99,43 +99,43 @@ end
 	Individually breaking down index parts here for ease of comprehension and future maintenance.
 	Yes, a clever soul could streamline this with more complex pattern matching.
 	Clever and absolute performance are not the goals. Editability by anonymous maintainers is.
-	
+
 	heading, major, and minor should all be number or nil
 	returns false instead if the string provided is not an index
 --]]
 local function ParseIndex(index)
 	local heading, major, minor, subrule
-	
+
 	if match(index, "%s") then
 		return false
 	end
-	
+
 	local i, j, suffix = find(index, "%.(.+)")
 	if suffix then
 		-- If the last character in the suffix is alphanumeric (and not L or O), set the subrule
 		subrule = match(sub(suffix, -1), "(["..INDEX_SUBRULE_CHARACTER_SET.."])")
-		
+
 		-- If that was successful, cut that character off the suffix.
 		if subrule then
 			suffix = sub(suffix, 1, -2)
 		end
-		
+
 		-- Now we can easily check whether the part between the period and the letter is a number.
 		-- If so, that's our minor index
 		minor = tonumber(suffix)
 		assert(type(minor) == "number", "Invalid index!")
-		
+
 		-- Now cut off the entire suffix and let's parse the rest
 		index = sub(index, 1, i-1)
 	end
-	
+
 	-- Getting the heading and major index is just some number manipulation
 	index = tonumber(index)
 	-- assert(type(index) == "number", "Invalid index!")
 	if not index then
 		return false
 	end
-	
+
 	if index >= 100 then
 		major = index%100
 		heading = math.floor(index/100)
@@ -143,7 +143,7 @@ local function ParseIndex(index)
 		-- The body of the rules starts at 100, lower values are headings
 		heading = index
 	end
-	
+
 	return heading, major, minor, subrule
 end
 
@@ -152,9 +152,9 @@ local function IsSubsequentRule(line, heading, major, minor, subrule)
 	if not index then
 		return false
 	end
-	
+
 	local h, a, i, s = ParseIndex(index)
-	
+
 	if subrule then
 		-- We can cheat like hell if we're dealing with subrules because there's no further nesting
 		-- Therefore, the next line is the next rule by definition
@@ -182,20 +182,20 @@ local function GetNestingDepth(index)
 	elseif match(index, "%d+%.%d+%.") then
 		-- Rules, e.g. 112.1.
 		depth = 3
-        elseif match(index, "^%d%d%d%.") or match(index, "^%d+%.%d+") then 
+        elseif match(index, "^%d%d%d%.") or match(index, "^%d+%.%d+") then
                 -- Titles, e.g. 102. or 1.2 for normal numbering conventions
 		depth = 2
 	else
 		-- Headings, e.g. 1.
 		depth = 1
 	end
-	
+
 	return depth
 end
 
 local function Titleize(title)
         local link, t, bare
-	if match(title,"%(Obsolete%)$") then 
+	if match(title,"%(Obsolete%)$") then
 		bare = sub(title,0,-12)
 		link = lower(bare)
 		link = gsub(link, "^(%S)", upper)
@@ -218,7 +218,7 @@ local function StylizeRule(ruleLine)
 		end
 		return ruleLine, true
 	end
-	
+
 	local h, a, i, s = ParseIndex(index)
 	-- Major indices and any rule shorter than five words should be a title, so try linking it!
 	-- (this is probably a stupid assumption let's see how long before we get burned)
@@ -234,16 +234,16 @@ local function StylizeRule(ruleLine)
 			end
 			assert(headingName)
 			headingName = lower(headingName)
-			headingName = gsub(headingName, "^(%S)", upper) 
+			headingName = gsub(headingName, "^(%S)", upper)
 			local expandedLink = format(GENERAL_RULE_EXPANDED_TEXT_FORMAT, headingName)
-			if match(rest,"%(Obsolete%)$") then 
+			if match(rest,"%(Obsolete%)$") then
 				local bare = sub(rest,0,-12)
                 		rest = format(WIKILINK_ALT_FORMAT, expandedLink, bare)..OBSOLETE_PATTERN
 			else
 				rest = format(WIKILINK_ALT_FORMAT, expandedLink, rest)
 			end
 		elseif match(index, "90[1-4]") then
-			-- The casual format articles usually have a "<Name of format>_(format)" nameing pattern 
+			-- The casual format articles usually have a "<Name of format>_(format)" nameing pattern
 
 			local expandedLink = format(CASUAL_FORMAT_EXPANDED_TEXT_FORMAT, rest)
 			rest = format(WIKILINK_ALT_FORMAT, expandedLink, rest)
@@ -251,12 +251,12 @@ local function StylizeRule(ruleLine)
 			rest = Titleize(rest)
 		end
 	else
-		local _, numWords = gsub(rest, "%S+", "") 
+		local _, numWords = gsub(rest, "%S+", "")
 		if numWords < 5 then
 			rest = Titleize(rest)
 		end
 	end
-	
+
 	return format("'''%s''' %s", index, rest)
 end
 
@@ -299,11 +299,11 @@ local function CreateRulesDiv(output,source,update,color)
 					outputLine = outputLine
 				end
 			end
-			
+
 			div:wikitext(outputLine)
 		end
 	end
-	
+
 	return div
 end
 
@@ -311,7 +311,7 @@ end
 local function CreateGlossaryDiv(output,source,update)
 	local div = mw.html.create("div")
 	div:addClass("crBox")
-	
+
 	local ns = mw.title.getCurrentTitle().namespace
 	div:wikitext(format(LAST_UPDATED_FORMAT, source, update))
 	div:newline()
@@ -319,7 +319,7 @@ local function CreateGlossaryDiv(output,source,update)
 	for i, line in ipairs(output) do
 		-- Bold the name of the entry for clarity
 		if i == 1 then
-			if match(line,"%(Obsolete%)$") then 
+			if match(line,"%(Obsolete%)$") then
 				-- Link and categorize obsolete terms
 				div:css("background-color", OBSOLETE_COLOR)
 				div:wikitext(";" .. gsub(line,"%(Obsolete%)","%([[Obsolete]]%)") .. "\n")
@@ -335,10 +335,10 @@ local function CreateGlossaryDiv(output,source,update)
 		end
 	end
 	-- Add glossary category in mainspace articles
-	if ns == 0 then  
+	if ns == 0 then
 		div:wikitext(GLOSSARY_CAT)
 	end
-	
+
 	return div
 end
 
@@ -354,9 +354,9 @@ function CR.TOC(frame)
 		heading, major, minor, subrule = ParseIndex(index)
 		assert(heading and heading>=1 and heading<=10 and not major and not minor and not subrule, "Invalid table of contents index!")
 	end
-	
+
 	local output = {}
-	
+
 	local collecting = false
 	for line in gmatch(CR.text, LINE_PATTERN) do
 		if match(line, RULE_LINE_PATTERN) then
@@ -365,7 +365,7 @@ function CR.TOC(frame)
 			elseif (not fullTOC) and IsSubsequentRule(line, heading, major, minor, subrule) then
 				break
 			end
-			
+
 			-- NOT elseif. We want to start collecting lines on the same line we match the target heading
 			if collecting then
 				tinsert(output, line)
@@ -374,7 +374,7 @@ function CR.TOC(frame)
 			break
 		end
 	end
-	
+
 	assert(#output > 0, "Index not found! ", index)
 	return tostring(CreateRulesDiv(output,CR_SOURCE,GetLastUpdate(),RULES_COLOR))
 end
@@ -383,7 +383,7 @@ end
 function CR.title(frame)
 	local title = frame.args[1]
 	title = sanitize(title)
-	
+
 	local output = {}
 	local passedTOC = false
 	local collecting = false
@@ -393,7 +393,7 @@ function CR.title(frame)
 			passedTOC = true
 		elseif match(line, BODY_END_LINE_PATTERN) then
 			break
-		elseif passedTOC then	
+		elseif passedTOC then
 			if match(line, title.."$") then
 				collecting = true
 				-- Stupid hack see above
@@ -402,7 +402,7 @@ function CR.title(frame)
 			elseif collecting and IsSubsequentRule(line, heading, major, minor, subrule) then
 				break
 			end
-			
+
 			-- NOT elseif. We want to start collecting lines on the same line we match the target heading
 			-- ignore whitespace
 			if collecting and match(line, "%S") then
@@ -410,7 +410,7 @@ function CR.title(frame)
 			end
 		end
 	end
-	
+
 	assert(#output > 0, "Index not found! " .. title)
 	if output then
 		return tostring(CreateRulesDiv(output,CR_SOURCE,GetLastUpdate(),RULES_COLOR))
@@ -422,7 +422,7 @@ end
 function CR.only(frame)
 	local index, additionalLevels = frame.args[1], tonumber(frame.args[2])
 	local heading, major, minor, subrule = ParseIndex(index)
-	
+
 	local output = {}
 	local passedTOC = false
 	local collecting = false
@@ -440,7 +440,7 @@ function CR.only(frame)
 					break
 				end
 			end
-			
+
 			-- NOT elseif. We want to start collecting lines on the same line we match the target heading
 			-- ignore whitespace
 			if collecting and match(line, "%S") then
@@ -463,7 +463,7 @@ function CR.only(frame)
 			end
 		end
 	end
-	
+
 	assert(#output > 0, "Index not found! " .. index)
 	return tostring(CreateRulesDiv(output,CR_SOURCE,GetLastUpdate(),RULES_COLOR))
 end
@@ -471,7 +471,7 @@ end
 function CR.full(frame)
 	local index = frame.args[1]
 	local heading, major, minor, subrule = ParseIndex(index)
-	
+
 	local output = {}
 	local passedTOC = false
 	local collecting = false
@@ -488,7 +488,7 @@ function CR.full(frame)
 					break
 				end
 			end
-			
+
 			-- NOT elseif. We want to start collecting lines on the same line we match the target heading
 			-- ignore whitespace
 			if collecting and match(line, "%S") then
@@ -496,7 +496,7 @@ function CR.full(frame)
 			end
 		end
 	end
-	
+
 	assert(#output > 0, "Index not found! " .. index)
 	return tostring(CreateRulesDiv(output,CR_SOURCE,GetLastUpdate(),RULES_COLOR))
 end
@@ -504,7 +504,7 @@ end
 function CR.glossary(frame)
 	local lookup = frame.args[1]
 	lookup = sanitize(lookup)
-	
+
 	local output = {}
 	local passedTOC, passedBody = false, false
 	local collecting = false
@@ -521,7 +521,7 @@ function CR.glossary(frame)
 			elseif collecting and not match(line, "%w") then
 				break
 			end
-			
+
 			-- NOT elseif. We want to start collecting lines on the same line we match the target heading
 			-- ignore whitespace
 			if collecting then
@@ -529,14 +529,14 @@ function CR.glossary(frame)
 			end
 		end
 	end
-	
+
 	assert(#output > 0, "Glossary entry not found! " .. lookup)
 	return tostring(CreateGlossaryDiv(output,GLOSSARY_SOURCE,GetLastUpdate()))
 end
 
 function CR.CRTemplateCall(frame)
 	local toc, exact, lookup, glossary
-	
+
 	for key, value in pairs(frame.args) do
 		if ((key == "toc") and value ~= "") or (value == "toc") then
 			toc = true
@@ -550,7 +550,7 @@ function CR.CRTemplateCall(frame)
 		end
 	end
 	assert(lookup or toc, "No lookup provided")
-	
+
 	if toc then
 		if not lookup then
 			return CR.TOC({args={}})
@@ -584,9 +584,9 @@ function CR.FormatRaw(frame)
 	-- split the lines so that it'll format correctly
 	local lines = {}
 	for line in gmatch(rawRulesText, LINE_PATTERN) do
-		tinsert(lines, line) 
+		tinsert(lines, line)
 	end
-	if format == "glossary" then 
+	if format == "glossary" then
 		return tostring(CreateGlossaryDiv(lines,source,update))
 	elseif find(rawRulesText,"(Obsolete)") then
 		return tostring(CreateRulesDiv(lines,source,update,OBSOLETE_COLOR))
