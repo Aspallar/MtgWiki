@@ -14,7 +14,7 @@ The CR module source can be found in the **src/wiki folder.**
 
 3. In vsc install the [**vscode-lua**](https://marketplace.visualstudio.com/items?itemName=trixnz.vscode-lua) extension for Lua language support and automatic use of luacheck to lint Lua code.
 
-4. In vsc install the [Lua Debug](https://marketplace.visualstudio.com/items?itemName=actboy168.lua-debug) extensions to enable Lua debugging.
+4. In vsc install the [Lua Debug](https://marketplace.visualstudio.com/items?itemName=actboy168.lua-debug) extension to enable Lua debugging.
 
 5. _(Optional)_ Install Lua. You should only need this if you want to run Lua code from the command line.
 
@@ -26,4 +26,7 @@ There are debug configurations set up for each of these. Go to the run window an
 
 
 ## License
-Licensed under [CC BY-NC-SA 2.5](https://creativecommons.org/licenses/by-nc-sa/2.5/). For a list of contributers see the [history](https://mtg.gamepedia.com/index.php?title=Module:CR&action=history) on the MTG wiki.
+Licensed under [CC BY-NC-SA 2.5](https://creativecommons.org/licenses/by-nc-sa/2.5/). Yes it's a strange license for software but it is the license that applies to all content, including code, published on a gamepedia wiki. Principal contributers are the original author [Corveroth](https://mtg.gamepedia.com/User:Corveroth) and [Yanderesliver](https://mtg.gamepedia.com/UserProfile:Yanderesliver). For a full list of contributers see the [history](https://mtg.gamepedia.com/index.php?title=Module:CR&action=history) on the MTG wiki.
+
+The exception to this is **src/mwhtml.lua** which is published under [GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
+
